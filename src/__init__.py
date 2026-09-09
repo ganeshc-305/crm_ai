@@ -1,0 +1,2 @@
+"""CRM AI application package."""
+

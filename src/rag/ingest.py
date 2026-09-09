@@ -8,9 +8,10 @@ This module expects OPENAI_API_KEY (and optional OPENAI_API_BASE) in env.
 import os
 from typing import List, Optional
 
-from langchain_document.docstore.document import Document
-from langchain_core.embeddings import OpenAIEmbeddings
-from langchain_core.vectorstores import Chroma, FAISS
+from langchain_core.documents import Document
+from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 
 
 def create_vectorstore_from_texts(texts: List[str], metadatas: Optional[List[dict]] = None, persist_dir: str = "data/vector_store"):

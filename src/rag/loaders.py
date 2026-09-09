@@ -10,8 +10,8 @@ from typing import List, Tuple
 import os
 import logging
 
-from langchain.docstore.document import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 logger = logging.getLogger(__name__)
 
@@ -47,17 +47,17 @@ def load_documents_from_dir(directory: str, recursive: bool = True) -> List[Docu
                 if ext in [".pdf"]:
                     try:
                         # prefer PyPDFLoader if available
-                        from langchain.document_loaders import PyPDFLoader
+                        from langchain_community.document_loaders import PyPDFLoader
                         docs_for_file = PyPDFLoader(fpath).load()
                     except Exception:
-                        from langchain.document_loaders import UnstructuredPDFLoader
+                        from langchain_community.document_loaders import UnstructuredPDFLoader
                         docs_for_file = UnstructuredPDFLoader(fpath).load()
                 elif ext in [".txt", ".md"]:
-                    from langchain.document_loaders import TextLoader
+                    from langchain_community.document_loaders import TextLoader
                     docs_for_file = TextLoader(fpath, encoding='utf-8').load()
                 elif ext in [".docx", ".doc"]:
                     try:
-                        from langchain.document_loaders import Docx2txtLoader
+                        from langchain_community.document_loaders import Docx2txtLoader
                         docs_for_file = Docx2txtLoader(fpath).load()
                     except Exception:
                         # if loader not available, fallback

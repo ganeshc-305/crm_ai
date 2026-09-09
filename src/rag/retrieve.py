@@ -2,9 +2,10 @@
 import os
 from typing import List
 
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma, FAISS
-from langchain.docstore.document import Document
+from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
 
 
 class RAGRetriever:
@@ -26,7 +27,9 @@ class RAGRetriever:
         # Try FAISS
         try:
             if os.path.isdir(self.persist_dir):
-                self.vectordb = FAISS.load_local(self.persist_dir, self.embedding_client)
+                self.vectordb = FAISS.load_local(
+                    self.persist_dir, self.embedding_client, allow_dangerous_deserialization=True
+                )
                 return
         except Exception:
             self.vectordb = None
