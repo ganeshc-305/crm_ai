@@ -25,7 +25,7 @@ class ChatMessage(Base):
     role = Column(String(32), nullable=False)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    metadata = Column(JSON, nullable=True)
+    message_metadata = Column('metadata', JSON, nullable=True)
 
 
 def _normalize_jdbc(url: str) -> str:
@@ -82,11 +82,11 @@ def save_message(role: str, content: str, metadata: Optional[Dict[str, Any]] = N
         raise RuntimeError('Database not initialized.')
     session = get_session()
     try:
-        m = ChatMessage(role=role, content=content, metadata=metadata)
+        m = ChatMessage(role=role, content=content, message_metadata=metadata)
         session.add(m)
         session.commit()
         session.refresh(m)
-        return {"id": m.id, "role": m.role, "content": m.content, "created_at": m.created_at.isoformat(), "metadata": m.metadata}
+        return {"id": m.id, "role": m.role, "content": m.content, "created_at": m.created_at.isoformat(), "metadata": m.message_metadata}
     finally:
         session.close()
 
@@ -102,6 +102,6 @@ def load_recent_messages(limit: int = 100) -> List[Dict[str, Any]]:
     session = get_session()
     try:
         rows = session.query(ChatMessage).order_by(ChatMessage.created_at.asc()).limit(limit).all()
-        return [{"id": r.id, "role": r.role, "content": r.content, "created_at": r.created_at.isoformat(), "metadata": r.metadata} for r in rows]
+        return [{"id": r.id, "role": r.role, "content": r.content, "created_at": r.created_at.isoformat(), "metadata": r.message_metadata} for r in rows]
     finally:
         session.close()
